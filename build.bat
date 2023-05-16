@@ -1,0 +1,1 @@
+msbuild AkinatorCVS\AkinatorCVS.vcxproj
