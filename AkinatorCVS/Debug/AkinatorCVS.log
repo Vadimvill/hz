@@ -2,6 +2,6 @@
 C:\Users\botme\source\repos\AkinatorCVS\AkinatorCVS\Tree.c(43,34): warning C4028: формальный параметр 1 отличается от объявления
 C:\Users\botme\source\repos\AkinatorCVS\AkinatorCVS\Tree.c(98,47): warning C4028: формальный параметр 3 отличается от объявления
 C:\Users\botme\source\repos\AkinatorCVS\AkinatorCVS\Tree.c(102,19): warning C4133: функция: несовместимые типы - из "time_t *" в "tm *const "
-C:\Users\botme\source\repos\AkinatorCVS\AkinatorCVS\Tree.c(102,28): warning C4133: функция: несовместимые типы - из "tm *" в "const time_t *const "
+C:\Users\botme\source\repos\AkinatorCVS\AkinatorCVS\Tree.c(102,27): warning C4133: функция: несовместимые типы - из "tm *" в "const time_t *const "
 LINK : warning LNK4044: нераспознанный параметр "/unsafe"; игнорируется
   AkinatorCVS.vcxproj -> C:\Users\botme\source\repos\AkinatorCVS\Debug\AkinatorCVS.exe

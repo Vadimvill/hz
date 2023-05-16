@@ -11,7 +11,8 @@ int main() {
     struct Node* root = readTreeFromFile(file);
     fclose(file);
     printf("1 - yes, 0 - no\n");
-    while (1) {
+    int done = 0;
+    while (!done) {
         struct Node* temp = root;
         do {
             temp = game(temp, logger);
@@ -25,13 +26,14 @@ int main() {
             if (file == NULL) return -1;
             writeTreeToFile(file, root);
             fclose(file);
-            break;
+            done = 1;
         }
         else if (i == 2) {
             fclose(file);
-            break;
+            done = 1;
         }
     }
+
     freeTree(root);
     fclose(logger);
     return 0;

@@ -98,11 +98,11 @@ void saveTree(struct Node* root, FILE* file) {
 void log(FILE* file, char* string, const int* i) {
     fseek(file, 0, SEEK_END);
     time_t t = time(NULL);
-    struct tm tm_info;
-    localtime_s(&t,&tm_info);
+    struct tm* tm_info = NULL;
+    localtime_s(&t,tm_info);
 
     char buffer[26];
-    strftime(buffer, 26, "%Y-%m-%d %H:%M:%S", &tm_info);
+    strftime(buffer, 26, "%Y-%m-%d %H:%M:%S", tm_info);
     if (i == NULL) fprintf(file, "Пользователь ввёл : %s : TIME : %s : \n", string, buffer);
     else if (string == NULL) fprintf(file, "Пользователь ввёл : %d : TIME : %s : \n", *i, buffer);
 }
@@ -134,6 +134,7 @@ FILE* copyFile() {
     fclose(file);
     file = fopen("C:\\Users\\botme\\AkinatorC\\logger.txt", "w");
     file2 = fopen("C:\\Users\\botme\\AkinatorC\\logger2.txt", "r");
+    if (file2 == NULL) return NULL;
     while (fgets(buffer, 2048, file2) != 0) {
         fprintf(file, "%s", buffer);
     }
