@@ -1,33 +1,41 @@
 name: SonarCloud
+
 on:
   push:
     branches:
       - main
   pull_request:
     types: [opened, synchronize, reopened]
+
+env:
+  PROJECT_DIR: . hz/AkinatorC
+  BUILD_TYPE: Release # Тип сборки (Debug или Release)
+
 jobs:
   build:
     name: Build and analyze
-    runs-on: windows-latest
-    env:
-      BUILD_WRAPPER_OUT_DIR: build_wrapper_output_directory # Directory where build-wrapper output will be placed
+    runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup CLion
+        uses: mskocik/setup-clion@v1
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - name: Install sonar-scanner and build-wrapper
-        uses: sonarsource/sonarcloud-github-c-cpp@v1
-        with:
-          installation-path: C:\Users\botme\
-          cache-binaries: false
-      - name: Run build-wrapper
+          clion-version: 2022.2.1 # Версия CLion, которую вы используете
+
+      - name: Build project
         run: |
-          New-Item -ItemType directory -Path build
-          cmake -S . -B build
-          build-wrapper-win-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} cmake --build build/ --config Release
+          cmake --build ${PROJECT_DIR}/cmake-build-${BUILD_TYPE} --config ${BUILD_TYPE}
+
       - name: Run sonar-scanner
+        uses: sonarsource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          sonar-scanner --define sonar.cfamily.build-wrapper-output="${{ env.BUILD_WRAPPER_OUT_DIR }}"
+        with:
+          projectBaseDir: ${PROJECT_DIR}
+          extraProperties: |
+            sonar.cfamily.build-wrapper-output=build_wrapper_output_directory
+
