@@ -1,48 +1,32 @@
-name: SonarCloud Analysis
-
+name: Build
 on:
   push:
     branches:
       - main
   pull_request:
     types: [opened, synchronize, reopened]
-
-env:
-  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  BUILD_WRAPPER_OUT_DIR: build_wrapper_output_directory # Directory where build-wrapper output will be placed
-
 jobs:
   build:
+    name: Build
     runs-on: windows-latest
+    env:
+      BUILD_WRAPPER_OUT_DIR: build_wrapper_output_directory # Directory where build-wrapper output will be placed
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Install Build Tools
-        uses: microsoft/setup-msbuild@v1.0.2
-
-      - name: Install CMake
-        uses: cmake/action-setup@v2
-
-      - name: Build with Build Wrapper
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Install sonar-scanner and build-wrapper
+        uses: SonarSource/sonarcloud-github-c-cpp@v1
+      - name: Run build-wrapper
         run: |
           New-Item -ItemType directory -Path build
           cmake -S . -B build
           build-wrapper-win-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} cmake --build build/ --config Release
-
-      - name: Run SonarCloud Analysis
-        uses: SonarSource/sonarcloud-github-action@master
+      - name: Run sonar-scanner
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          projectBaseDir: ./  # The root directory of the project relative to the repository
-          sonarCloudScanOptions: >
-            -Dsonar.projectKey=<decompressor>
-            -Dsonar.sources=./
-            -Dsonar.exclusions=**/build/**,**/tests/**
-            -Dsonar.cfamily.build-wrapper-output=${{ env.BUILD_WRAPPER_OUT_DIR }}
-            -Dsonar.cfamily.threads=4
-            -Dsonar.cfamily.cache.enabled=false
-            -Dsonar.host.url=https://sonarcloud.io
-            -Dsonar.login=${{ env.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # Put the name of your token here
+        run: |
+          sonar-scanner --define sonar.cfamily.build-wrapper-output="${{ env.BUILD_WRAPPER_OUT_DIR }}"
+          
 
