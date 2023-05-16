@@ -40,7 +40,7 @@ void writeTreeToFile(FILE* f, struct Node* root) {
     writeTreeToFile(f, root->right);
 }
 
-char isAnswer(struct Node* node) {
+char isAnswer(const struct Node* node) {
     if (node->left == NULL && node->right == NULL) return 1;
     return 0;
 }
@@ -95,16 +95,16 @@ void saveTree(struct Node* root, FILE* file) {
     saveTree(root->right, file);
 }
 
-void log(FILE* file, char* string, int* i) {
+void log(FILE* file, char* string, const int* i) {
     fseek(file, 0, SEEK_END);
     time_t t = time(NULL);
-    struct tm* tm_info = localtime(&t);
+    struct tm tm_info;
+    localtime_s(&t,&tm_info);
 
     char buffer[26];
-    strftime(buffer, 26, "%Y-%m-%d %H:%M:%S", tm_info);
+    strftime(buffer, 26, "%Y-%m-%d %H:%M:%S", &tm_info);
     if (i == NULL) fprintf(file, "Пользователь ввёл : %s : TIME : %s : \n", string, buffer);
     else if (string == NULL) fprintf(file, "Пользователь ввёл : %d : TIME : %s : \n", *i, buffer);
-
 }
 
 int setArraySize(int a, int max) {
@@ -118,11 +118,14 @@ int setArraySize(int a, int max) {
         a = setArraySize(a, max);
     }
     else return a;
+    return -1;
 }
 
 FILE* copyFile() {
     FILE* file = fopen("C:\\Users\\botme\\AkinatorC\\logger.txt", "r");
     FILE* file2 = fopen("C:\\Users\\botme\\AkinatorC\\logger2.txt", "w");
+    if (file == NULL) return NULL;
+    if (file2 == NULL) return NULL;
     char* buffer = malloc(sizeof(char) * 2048);
     while (fgets(buffer, 2048, file) != 0) {
         fprintf(file2, "%s", buffer);

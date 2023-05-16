@@ -1,6 +1,6 @@
 #include "stdio.h"
 
-typedef struct Node {
+struct Node {
     char* text;
     struct Node* left;
     struct Node* right;

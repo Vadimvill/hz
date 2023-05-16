@@ -7,6 +7,7 @@
 int main() {
     FILE* logger = copyFile();
     FILE* file = fopen("C:\\Users\\botme\\AkinatorC\\save.txt", "r");
+    if (file == NULL) return -1;
     struct Node* root = readTreeFromFile(file);
     fclose(file);
     printf("1 - yes, 0 - no\n");
@@ -20,7 +21,8 @@ int main() {
         i = setArraySize(i, 3);
         log(file, NULL, &i);
         if (i == 1) {
-            FILE* file = fopen("C:\\Users\\botme\\AkinatorC\\save.txt", "w");
+            file = fopen("C:\\Users\\botme\\AkinatorC\\save.txt", "w");
+            if (file == NULL) return -1;
             writeTreeToFile(file, root);
             fclose(file);
             break;
@@ -29,9 +31,8 @@ int main() {
             fclose(file);
             break;
         }
-
     }
-    freeTree(root);;
+    freeTree(root);
     fclose(logger);
     return 0;
 }
