@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.23)
-project(hz)
+project(src)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(hz src/Tree.c)
+add_executable(src main.c src/Tree.c)
+
