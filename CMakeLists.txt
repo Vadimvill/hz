@@ -3,4 +3,4 @@ project(hz)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(hz AkinatorC/main.c AkinatorC/Tree.c AkinatorC/Tree.h AkinatorC/Game.h)
+add_executable(AkinatorC/main.c AkinatorC/Tree.c AkinatorC/Tree.h AkinatorC/Game.h)
